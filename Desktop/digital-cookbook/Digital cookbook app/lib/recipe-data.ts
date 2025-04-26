@@ -17,7 +17,7 @@ export const recipes: Recipe[] = [
   {
     id: 1,
     title: "Avocado Toast with Poached Eggs",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.aberdeenskitchen.com/wp-content/uploads/2019/05/Avocado-Egg-Breakfast-Toast-FI-Thumbnail-1200X1200.jpg?height=300&width=400",
     rating: 4.5,
     category: "Breakfast",
     description: "A nutritious breakfast option that's quick to prepare",
@@ -43,7 +43,7 @@ export const recipes: Recipe[] = [
   {
     id: 2,
     title: "Creamy Tomato Basil Pasta",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_1:1/k%2Farchive%2F0eb929bc2c007ebf6009316a327b1e37587045a4?height=300&width=400",
     rating: 4.8,
     category: "Dinner",
     description: "A comforting pasta dish with rich tomato flavor",
@@ -73,7 +73,7 @@ export const recipes: Recipe[] = [
   {
     id: 3,
     title: "Dosa",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2023/06/brown-rice-dosa-recipe.jpg?height=300&width=400",
     rating: 4.9,
     category: "Breakfast",
     region: "Tamil Nadu",
@@ -102,7 +102,7 @@ export const recipes: Recipe[] = [
   {
     id: 4,
     title: "Fresh Mediterranean Salad",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIYynBbeVAsxOLyEqoyJUHOydBidppiT_W9A&s?height=300&width=400",
     rating: 4.3,
     category: "Lunch",
     description: "A refreshing salad perfect for warm days",
@@ -131,7 +131,7 @@ export const recipes: Recipe[] = [
   {
     id: 5,
     title: "Idli",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://5.imimg.com/data5/SELLER/Default/2023/3/296179680/PK/JO/EG/186596495/ready-made-idli-ready-to-eat-idly.jpeg?height=300&width=400",
     rating: 4.7,
     category: "Breakfast",
     region: "Tamil Nadu",
@@ -159,7 +159,7 @@ export const recipes: Recipe[] = [
   {
     id: 6,
     title: "Berry Smoothie Bowl",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.tasteofhome.com/wp-content/uploads/2018/06/Berry-Smoothie-Bowl_EXPS_JMZ18_224489_B03_08_5b.jpg?height=300&width=400",
     rating: 4.6,
     category: "Breakfast",
     description: "A nutritious and colorful breakfast bowl",
@@ -184,7 +184,7 @@ export const recipes: Recipe[] = [
   {
     id: 7,
     title: "Sambar",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.cubesnjuliennes.com/wp-content/uploads/2021/01/South-Indian-Sambar-Recipe.jpg?height=300&width=400",
     rating: 4.8,
     category: "Lunch",
     region: "Tamil Nadu",
@@ -218,7 +218,7 @@ export const recipes: Recipe[] = [
   {
     id: 8,
     title: "Chettinad Chicken Curry",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.whiskaffair.com/wp-content/uploads/2020/09/Chicken-Chettinad-Curry-2-3.jpg?height=300&width=400",
     rating: 4.9,
     category: "Dinner",
     region: "Tamil Nadu",
@@ -261,7 +261,7 @@ export const recipes: Recipe[] = [
   {
     id: 9,
     title: "Pongal",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/01/pongal-ven-pongal.jpg?height=300&width=400",
     rating: 4.6,
     category: "Breakfast",
     region: "Tamil Nadu",
@@ -294,7 +294,7 @@ export const recipes: Recipe[] = [
   {
     id: 10,
     title: "Rasam",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2018/11/rasam-recipe.jpg?height=300&width=400",
     rating: 4.7,
     category: "Lunch",
     region: "Tamil Nadu",
@@ -331,7 +331,7 @@ export const recipes: Recipe[] = [
   {
     id: 11,
     title: "Coconut Chutney",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/05/coconut-chutney-recipe.jpg?height=300&width=400",
     rating: 4.5,
     category: "Breakfast",
     region: "Tamil Nadu",
@@ -359,7 +359,7 @@ export const recipes: Recipe[] = [
   {
     id: 12,
     title: "Mutton Biryani (Tamil Nadu Style)",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://www.hindustantimes.com/ht-img/img/2024/03/17/550x309/Chennai_Mutton_Biryani_1710659287055_1710659323008.jpg?height=300&width=400",
     rating: 4.9,
     category: "Dinner",
     region: "Tamil Nadu",
