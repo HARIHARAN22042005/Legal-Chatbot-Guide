@@ -10,7 +10,6 @@ import LegalFormHelper from './components/LegalFormHelper';
 import PrecedentFinder from './components/PrecedentFinder';
 // import VoiceInterface from './components/VoiceInterface';
 import { BookmarkProvider } from './contexts/BookmarkContext';
-
 export type ActiveView = 'chat' | 'dictionary' | 'pdf-reader' | 'case-summarizer' | 'act-search' | 'bookmarks' | 'form-helper' | 'precedent-finder';
 
 function App() {
