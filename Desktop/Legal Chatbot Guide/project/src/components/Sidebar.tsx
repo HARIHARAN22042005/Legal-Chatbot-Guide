@@ -1,6 +1,7 @@
 import React from 'react';
-import { MessageSquare, BookOpen, FileText, Scale, Search, Bookmark, X, FileCheck, Gavel, Mic } from 'lucide-react';
+import { MessageSquare, BookOpen, FileText, Scale, Search, Bookmark, X, FileCheck, Gavel, Mic, LogOut, User, Book, Newspaper, Calculator, FolderOpen, Home } from 'lucide-react';
 import { ActiveView } from '../App';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SidebarProps {
   activeView: ActiveView;
@@ -10,7 +11,13 @@ interface SidebarProps {
 }
 
 const menuItems = [
+  { id: 'dashboard', label: 'Dashboard', icon: Home, description: 'Overview and quick actions' },
   { id: 'chat', label: 'Legal Q&A Chat', icon: MessageSquare, description: 'Ask legal questions and get instant answers' },
+  { id: 'voice-interface', label: 'Voice Assistant', icon: Mic, description: 'Ask questions using voice input' },
+  { id: 'knowledge-base', label: 'Legal Knowledge Base', icon: Book, description: 'Comprehensive guide to Indian laws and acts' },
+  { id: 'case-tracker', label: 'Case Tracker', icon: FolderOpen, description: 'Track and manage your legal cases' },
+  { id: 'legal-news', label: 'Legal News', icon: Newspaper, description: 'Latest legal updates and court judgments' },
+  { id: 'legal-calculator', label: 'Legal Calculator', icon: Calculator, description: 'Calculate legal fees, duties, and amounts' },
   { id: 'dictionary', label: 'Law Dictionary', icon: BookOpen, description: 'Search legal terms and definitions' },
   { id: 'pdf-reader', label: 'PDF Analyzer', icon: FileText, description: 'Upload and analyze legal documents' },
   { id: 'case-summarizer', label: 'Case Summarizer', icon: Scale, description: 'Summarize legal cases and judgments' },
@@ -18,10 +25,19 @@ const menuItems = [
   { id: 'bookmarks', label: 'Saved Content', icon: Bookmark, description: 'Access your bookmarked information' },
   { id: 'form-helper', label: 'Legal Form Helper', icon: FileCheck, description: 'Guidance for filling legal forms' },
   { id: 'precedent-finder', label: 'Case Precedents', icon: Gavel, description: 'Find related case precedents' },
-  { id: 'voice-interface', label: 'Voice Assistant', icon: Mic, description: 'Ask questions using voice input' },
+  { id: 'user-profile', label: 'User Profile', icon: User, description: 'View your account information' },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, setIsOpen }) => {
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
   return (
     <>
       {/* Overlay for mobile */}
@@ -91,11 +107,38 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
             </div>
           </nav>
 
-          {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="text-xs text-gray-500 text-center">
-              <p className="mb-1">Legal guidance for everyone</p>
-              <p className="text-xs">Always consult qualified professionals</p>
+          {/* User Info & Footer */}
+          <div className="border-t border-gray-200">
+            {/* User Info */}
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-blue-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user?.email || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    ID: {user?.id?.slice(0, 8)}... | Signed in
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4">
+              <div className="text-xs text-gray-500 text-center">
+                <p className="mb-1">Legal guidance for everyone</p>
+                <p className="text-xs">Always consult qualified professionals</p>
+              </div>
             </div>
           </div>
         </div>

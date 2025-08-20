@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Send, Bot, User, Bookmark, BookmarkCheck, Zap, Brain } from 'lucide-react';
 import { useBookmarks } from '../contexts/BookmarkContext';
+import { aiService, AIResponse } from '../services/aiService';
 
 interface Message {
   id: string;
@@ -8,6 +9,8 @@ interface Message {
   content: string;
   timestamp: Date;
   legalReference?: string;
+  confidence?: number;
+  aiGenerated?: boolean;
 }
 
 const ChatInterface: React.FC = () => {
@@ -33,53 +36,37 @@ const ChatInterface: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const simulateBotResponse = (userMessage: string): Message => {
-    const legalResponses: { [key: string]: { content: string; reference: string } } = {
-      'bail': {
-        content: 'Bail is a legal mechanism that allows an accused person to be temporarily released from custody while awaiting trial. Under the Indian legal system, bail is generally a right for bailable offenses and discretionary for non-bailable offenses. The court considers factors like the severity of the crime, flight risk, and likelihood of tampering with evidence.',
-        reference: 'Code of Criminal Procedure, 1973 - Sections 436-450'
-      },
-      'fir': {
-        content: 'FIR (First Information Report) is the first step in the criminal justice process. It\'s a written document prepared by police when they receive information about a cognizable offense. An FIR can be filed at any police station regardless of jurisdiction, and a copy must be provided free of cost to the informant.',
-        reference: 'Code of Criminal Procedure, 1973 - Section 154'
-      },
-      'ipc 302': {
-        content: 'IPC Section 302 deals with the punishment for murder. It states that whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to a fine. Murder is defined as causing death with the intention of causing death or knowledge that the act is likely to cause death.',
-        reference: 'Indian Penal Code, 1860 - Section 302'
-      },
-      'contract': {
-        content: 'A contract is a legally binding agreement between two or more parties. For a contract to be valid, it must have: (1) Offer and acceptance, (2) Consideration, (3) Capacity to contract, (4) Free consent, and (5) Lawful object. The Indian Contract Act governs the formation and enforcement of contracts.',
-        reference: 'Indian Contract Act, 1872 - Section 10'
-      }
-    };
+  const generateBotResponse = async (userMessage: string): Promise<Message> => {
+    try {
+      const aiResponse: AIResponse = await aiService.getLegalResponse(userMessage, {
+        jurisdiction: 'India',
+        area: 'General',
+        complexity: 'basic'
+      });
 
-    const lowercaseMessage = userMessage.toLowerCase();
-    let response = legalResponses[lowercaseMessage];
-    
-    if (!response) {
-      // Check for partial matches
-      for (const key in legalResponses) {
-        if (lowercaseMessage.includes(key)) {
-          response = legalResponses[key];
-          break;
-        }
-      }
-    }
+      return {
+        id: Date.now().toString(),
+        type: 'bot',
+        content: aiResponse.content,
+        timestamp: new Date(),
+        legalReference: aiResponse.reference,
+        confidence: aiResponse.confidence,
+        aiGenerated: aiService.isAIEnabled()
+      };
+    } catch (error) {
+      console.error('Error generating AI response:', error);
 
-    if (!response) {
-      response = {
-        content: `Thank you for your question about "${userMessage}". While I can provide general legal information, this appears to be a specific query that would benefit from detailed legal research. I recommend consulting with a qualified legal professional for personalized advice on this matter.`,
-        reference: 'General Legal Guidance'
+      // Fallback response
+      return {
+        id: Date.now().toString(),
+        type: 'bot',
+        content: `I apologize, but I'm experiencing technical difficulties. Please try rephrasing your question about "${userMessage}" or consult with a qualified legal professional for immediate assistance.`,
+        timestamp: new Date(),
+        legalReference: 'System Error - Fallback Response',
+        confidence: 0.1,
+        aiGenerated: false
       };
     }
-
-    return {
-      id: Date.now().toString(),
-      type: 'bot',
-      content: response.content,
-      timestamp: new Date(),
-      legalReference: response.reference
-    };
   };
 
   const handleSendMessage = async () => {
@@ -92,16 +79,31 @@ const ChatInterface: React.FC = () => {
       timestamp: new Date()
     };
 
+    const currentMessage = inputMessage;
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate bot response delay
-    setTimeout(() => {
-      const botResponse = simulateBotResponse(inputMessage);
+    try {
+      // Generate AI response
+      const botResponse = await generateBotResponse(currentMessage);
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Error in handleSendMessage:', error);
+      // Add error message
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: 'bot',
+        content: 'I apologize, but I encountered an error processing your request. Please try again or consult with a legal professional.',
+        timestamp: new Date(),
+        legalReference: 'System Error',
+        confidence: 0,
+        aiGenerated: false
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -133,11 +135,31 @@ const ChatInterface: React.FC = () => {
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center space-x-3">
-          <Bot className="h-8 w-8 text-blue-600" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Legal Q&A Assistant</h1>
-            <p className="text-sm text-gray-600">Ask any legal question and get instant guidance</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Bot className="h-8 w-8 text-blue-600" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Legal Q&A Assistant</h1>
+              <p className="text-sm text-gray-600">Ask any legal question and get instant guidance</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-center space-x-2 mb-1">
+              {aiService.isAIEnabled() ? (
+                <>
+                  <Brain className="h-4 w-4 text-green-600" />
+                  <span className="text-xs text-green-600 font-medium">AI Enhanced</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="h-4 w-4 text-blue-600" />
+                  <span className="text-xs text-blue-600 font-medium">Smart Rules</span>
+                </>
+              )}
+            </div>
+            <div className="text-sm text-gray-500">
+              {messages.length > 0 && `${messages.length} messages`}
+            </div>
           </div>
         </div>
       </div>
@@ -176,8 +198,33 @@ const ChatInterface: React.FC = () => {
                   
                   {message.legalReference && (
                     <div className="mt-2 pt-2 border-t border-gray-300">
-                      <p className="text-xs text-gray-600 font-medium">Legal Reference:</p>
-                      <p className="text-xs text-gray-600">{message.legalReference}</p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">Legal Reference:</p>
+                          <p className="text-xs text-gray-600">{message.legalReference}</p>
+                        </div>
+                        {message.type === 'bot' && (
+                          <div className="flex items-center space-x-2">
+                            {message.aiGenerated && (
+                              <div className="flex items-center space-x-1">
+                                <Brain className="h-3 w-3 text-green-600" />
+                                <span className="text-xs text-green-600">AI</span>
+                              </div>
+                            )}
+                            {message.confidence !== undefined && (
+                              <div className="flex items-center space-x-1">
+                                <div className={`w-2 h-2 rounded-full ${
+                                  message.confidence > 0.7 ? 'bg-green-500' :
+                                  message.confidence > 0.4 ? 'bg-yellow-500' : 'bg-red-500'
+                                }`}></div>
+                                <span className="text-xs text-gray-500">
+                                  {Math.round(message.confidence * 100)}%
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -231,6 +278,31 @@ const ChatInterface: React.FC = () => {
 
       {/* Input Area */}
       <div className="border-t border-gray-200 px-6 py-4">
+        {/* Example Prompts */}
+        {messages.length === 1 && (
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 mb-2">Try asking about:</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                'What is bail?',
+                'Explain IPC 302',
+                'How to file an FIR?',
+                'What is a contract?',
+                'Divorce procedure in India',
+                'Property registration process'
+              ].map((example) => (
+                <button
+                  key={example}
+                  onClick={() => setInputMessage(example)}
+                  className="px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors"
+                >
+                  {example}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex space-x-4">
           <div className="flex-1">
             <textarea

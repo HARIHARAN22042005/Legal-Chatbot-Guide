@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, Download, AlertCircle, Bookmark, BookmarkCheck, Image, File } from 'lucide-react';
+import { Upload, FileText, Download, AlertCircle, Bookmark, BookmarkCheck, Image, File, Brain, Zap, Eye, FileCheck, Scale, Search } from 'lucide-react';
 import { useBookmarks } from '../contexts/BookmarkContext';
+import { aiService } from '../services/aiService';
 
 interface PDFAnalysis {
   summary: string;
@@ -8,6 +9,11 @@ interface PDFAnalysis {
   legalImplications: string[];
   recommendations: string[];
   documentType: string;
+  riskAssessment: 'Low' | 'Medium' | 'High';
+  urgentActions: string[];
+  relatedLaws: string[];
+  confidence: number;
+  aiGenerated: boolean;
 }
 
 const PDFReader: React.FC = () => {
@@ -55,9 +61,14 @@ const PDFReader: React.FC = () => {
           'Add dispute resolution mechanisms including mediation before litigation',
           'Specify the process for contract amendments and modifications'
         ],
-        documentType: 'Service Agreement Contract'
+        documentType: 'Service Agreement Contract',
+        riskAssessment: 'Medium',
+        urgentActions: ['Review liability clauses', 'Verify payment terms'],
+        relatedLaws: ['Indian Contract Act 1872', 'Information Technology Act 2000'],
+        confidence: 0.8,
+        aiGenerated: false
       };
-      
+
       setAnalysis(mockAnalysis);
       setIsAnalyzing(false);
     }, 3000);

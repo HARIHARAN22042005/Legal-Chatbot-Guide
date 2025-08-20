@@ -8,18 +8,49 @@ import ActSearch from './components/ActSearch';
 import BookmarksPanel from './components/BookmarksPanel';
 import LegalFormHelper from './components/LegalFormHelper';
 import PrecedentFinder from './components/PrecedentFinder';
-// import VoiceInterface from './components/VoiceInterface';
+import UserProfile from './components/UserProfile';
+import LegalKnowledgeBase from './components/LegalKnowledgeBase';
+import VoiceInterface from './components/VoiceInterface';
+import CaseTracker from './components/CaseTracker';
+import LegalNews from './components/LegalNews';
+import LegalCalculator from './components/LegalCalculator';
+import Dashboard from './components/Dashboard';
+import Login from './components/Login';
 import { BookmarkProvider } from './contexts/BookmarkContext';
-export type ActiveView = 'chat' | 'dictionary' | 'pdf-reader' | 'case-summarizer' | 'act-search' | 'bookmarks' | 'form-helper' | 'precedent-finder';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+export type ActiveView = 'dashboard' | 'chat' | 'voice-interface' | 'knowledge-base' | 'case-tracker' | 'legal-news' | 'legal-calculator' | 'dictionary' | 'pdf-reader' | 'case-summarizer' | 'act-search' | 'bookmarks' | 'form-helper' | 'precedent-finder' | 'user-profile';
 
-function App() {
-  const [activeView, setActiveView] = useState<ActiveView>('chat');
+// Loading component
+const LoadingSpinner = () => (
+  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading...</p>
+    </div>
+  </div>
+);
+
+// Main app content component
+const AppContent = () => {
+  const [activeView, setActiveView] = useState<ActiveView>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const renderActiveView = () => {
     switch (activeView) {
+      case 'dashboard':
+        return <Dashboard onNavigate={(view) => setActiveView(view as ActiveView)} />;
       case 'chat':
         return <ChatInterface />;
+      case 'voice-interface':
+        return <VoiceInterface />;
+      case 'knowledge-base':
+        return <LegalKnowledgeBase />;
+      case 'case-tracker':
+        return <CaseTracker />;
+      case 'legal-news':
+        return <LegalNews />;
+      case 'legal-calculator':
+        return <LegalCalculator />;
       case 'dictionary':
         return <LegalDictionary />;
       case 'pdf-reader':
@@ -34,23 +65,23 @@ function App() {
         return <LegalFormHelper />;
       case 'precedent-finder':
         return <PrecedentFinder />;
-      //      case 'voice-interface':
-      //        return <VoiceInterface />;
+      case 'user-profile':
+        return <UserProfile />;
       default:
-        return <ChatInterface />;
+        return <Dashboard onNavigate={(view) => setActiveView(view as ActiveView)} />;
     }
   };
 
   return (
     <BookmarkProvider>
       <div className="min-h-screen bg-gray-50 flex">
-        <Sidebar 
-          activeView={activeView} 
+        <Sidebar
+          activeView={activeView}
           setActiveView={setActiveView}
           isOpen={sidebarOpen}
           setIsOpen={setSidebarOpen}
         />
-        
+
         <div className="flex-1 flex flex-col lg:ml-64">
           <header className="bg-white shadow-sm border-b border-gray-200 lg:hidden">
             <div className="flex items-center justify-between p-4">
@@ -73,6 +104,30 @@ function App() {
       </div>
     </BookmarkProvider>
   );
+};
+
+// Main App component with authentication
+function App() {
+  return (
+    <AuthProvider>
+      <AuthenticatedApp />
+    </AuthProvider>
+  );
 }
+
+// Component that handles authentication state
+const AuthenticatedApp = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!user) {
+    return <Login />;
+  }
+
+  return <AppContent />;
+};
 
 export default App;
