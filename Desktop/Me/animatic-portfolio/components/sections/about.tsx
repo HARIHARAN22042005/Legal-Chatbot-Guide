@@ -1,15 +1,13 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Code2, Lightbulb, Brain, Coffee, Users, Target } from "lucide-react"
+import { Code2, Lightbulb, Brain, Coffee, Target } from "lucide-react"
 import AnimatedCard from "@/components/ui/animated-card"
 
 export default function About() {
   const stats = [
-    { label: "Years of Experience", value: "3+", icon: <Coffee className="h-5 w-5" /> },
-    { label: "Projects Completed", value: "25+", icon: <Target className="h-5 w-5" /> },
-    { label: "Technologies Mastered", value: "15+", icon: <Code2 className="h-5 w-5" /> },
-    { label: "Happy Clients", value: "10+", icon: <Users className="h-5 w-5" /> },
+    { label: "Years of Experience", value: "1", icon: <Coffee className="h-5 w-5" /> },
+    { label: "Projects Completed", value: "3+", icon: <Target className="h-5 w-5" /> },
   ]
 
   const qualities = [
@@ -60,19 +58,16 @@ export default function About() {
             className="space-y-6"
           >
             <h3 className="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">
-              Crafting Digital Solutions with Passion
+              Summary
             </h3>
 
             <p className="text-lg text-gray-300 leading-relaxed">
-              From HTML5 to React, I speak the language of the web fluently. My journey began in 2021, and since then,
-              I've been dedicated to mastering the art of web development. I design, develop, and debug with a curious
-              mind and a creative soul.
+              I’m a  web developer dedicated to building thoughtful, reliable, and scalable web solutions.
+With hands-on experience across both frontend and backend, I bridge design with functionality to deliver real value. 
             </p>
 
             <p className="text-lg text-gray-300 leading-relaxed">
-              I believe in writing clean, maintainable code and creating user experiences that are not just functional,
-              but delightful. Whether it's a complex web application or a simple landing page, I approach every project
-              with the same level of enthusiasm and attention to detail.
+              I write clean, maintainable and optimized code and enjoy solving complex challenges with practical, user-centered thinking. Driven by curiosity and craftsmanship.
             </p>
 
             <div className="flex flex-wrap gap-4 mt-8">
@@ -85,6 +80,7 @@ export default function About() {
               <span className="px-4 py-2 bg-pink-500/10 text-pink-400 rounded-full text-sm border border-pink-500/20">
                 UI/UX Design
               </span>
+
             </div>
           </motion.div>
 

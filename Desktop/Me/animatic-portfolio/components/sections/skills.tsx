@@ -18,7 +18,7 @@ export default function Skills() {
   const skills = {
     frontend: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js"],
     styling: ["Tailwind CSS", "Bootstrap", "Sass", "Styled Components"],
-    backend: ["Node.js", "Express.js", "MongoDB", "PostgreSQL"],
+    backend: ["java", "Python", "MongoDB", "Node.js"],
     tools: ["Git", "VS Code", "Figma", "Docker"],
     soft: ["Teamwork", "Problem-Solving", "Time Management", "Communication"],
   }

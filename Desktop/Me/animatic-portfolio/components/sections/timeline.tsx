@@ -6,34 +6,22 @@ import TimelineItem from "@/components/ui/timeline-item"
 export default function Timeline() {
   const timelineEvents = [
     {
-      year: "2021",
-      title: "First lines of HTML",
-      description: "Started my coding journey with HTML and CSS basics.",
+      year: "2019–2020",
+      title: "Government Higher Secondary School",
+      description: "Secondary School Education (Percentage: 59.2) — Komarapalayam, TN",
       icon: "Code",
     },
     {
-      year: "2022",
-      title: "JavaScript clicked",
-      description: "Mastered JavaScript fundamentals and started building interactive websites.",
+      year: "2021–2022",
+      title: "Government Higher Secondary School",
+      description: "Higher Secondary Education (Percentage: 50) — Kallakurichi, TN",
       icon: "FileCode",
     },
     {
-      year: "2023",
-      title: "React + Tailwind love story",
-      description: "Discovered the power of React and fell in love with Tailwind CSS.",
+      year: "2022–2026",
+      title: "Excel Engineering College Autonomous",
+      description: "Bachelor of Engineering in [Your Engineering Branch]. Current CGPA: 7.2 / 10 — Komarapalayam, Erode, TN",
       icon: "Atom",
-    },
-    {
-      year: "2024",
-      title: "Building projects that solve real problems",
-      description: "Started creating applications that provide value and solve real-world problems.",
-      icon: "Rocket",
-    },
-    {
-      year: "2025",
-      title: "Animatic Portfolio V0 🚀",
-      description: "Launched my interactive portfolio showcasing my journey and skills.",
-      icon: "Sparkles",
     },
   ]
 

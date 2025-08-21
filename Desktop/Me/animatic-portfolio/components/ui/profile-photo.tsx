@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { Download } from "lucide-react"
 
 export default function ProfilePhoto() {
   return (
@@ -35,7 +36,7 @@ export default function ProfilePhoto() {
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 p-1">
           <div className="w-full h-full rounded-full bg-gray-900 overflow-hidden">
             <Image
-              src="/placeholder.svg?height=400&width=400"
+              src="/IMG_20250203_204335.jpg?height=400&width=400"
               alt="Hariharan S - Full Stack Developer"
               width={400}
               height={400}
@@ -72,6 +73,25 @@ export default function ProfilePhoto() {
         className="absolute top-1/2 -right-8 w-10 h-10 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg"
       >
         <span className="text-white text-lg">⚡</span>
+      </motion.div>
+
+      {/* Resume Download Button */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        className="absolute -bottom-16 left-1/2 transform -translate-x-1/2"
+      >
+        <motion.a
+          href="/hariharan.pdf"
+          download="Hariharan_S_Resume.pdf"
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+        >
+          <Download className="w-5 h-5 group-hover:animate-bounce" />
+          <span>Download Resume</span>
+        </motion.a>
       </motion.div>
     </div>
   )

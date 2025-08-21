@@ -4,7 +4,7 @@ import About from "@/components/sections/about"
 import Skills from "@/components/sections/skills"
 import Projects from "@/components/sections/projects"
 import Timeline from "@/components/sections/timeline"
-import Achievements from "@/components/sections/achievements"
+import Internships from "@/components/sections/internships"
 import Contact from "@/components/sections/contact"
 import CursorEffect from "@/components/ui/cursor-effect"
 import Navigation from "@/components/ui/navigation"
@@ -37,7 +37,7 @@ export default function Home() {
         <Skills />
         <Projects />
         <Timeline />
-        <Achievements />
+        <Internships />
         <Contact />
       </div>
     </main>
