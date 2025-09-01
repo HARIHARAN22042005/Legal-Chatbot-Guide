@@ -7,16 +7,15 @@ export interface Bookmark {
   source: string;
   timestamp: Date;
   category?: string;
-  act?: string;
-  section?: string;
-  court?: string;
-  documentType?: string;
+  tags?: string[];
+  notes?: string;
 }
 
 interface BookmarkContextType {
   bookmarks: Bookmark[];
   addBookmark: (bookmark: Bookmark) => void;
   removeBookmark: (id: string) => void;
+  updateBookmark: (id: string, updates: Partial<Bookmark>) => void;
   clearAllBookmarks: () => void;
 }
 
@@ -74,6 +73,14 @@ export const BookmarkProvider: React.FC<BookmarkProviderProps> = ({ children }) 
     setBookmarks(prev => prev.filter(bookmark => bookmark.id !== id));
   };
 
+  const updateBookmark = (id: string, updates: Partial<Bookmark>) => {
+    setBookmarks(prev =>
+      prev.map(bookmark =>
+        bookmark.id === id ? { ...bookmark, ...updates } : bookmark
+      )
+    );
+  };
+
   const clearAllBookmarks = () => {
     setBookmarks([]);
   };
@@ -83,6 +90,7 @@ export const BookmarkProvider: React.FC<BookmarkProviderProps> = ({ children }) 
       bookmarks,
       addBookmark,
       removeBookmark,
+      updateBookmark,
       clearAllBookmarks
     }}>
       {children}

@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
       
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-full w-64 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 h-full w-64 bg-surface shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out
         lg:translate-x-0 lg:static lg:z-auto
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center space-x-2">
-              <Scale className="h-8 w-8 text-blue-700" />
+              <Scale className="h-8 w-8 text-primary" />
               <h1 className="text-xl font-bold text-gray-900">Legal Guide</h1>
             </div>
             <button
@@ -86,14 +86,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
                     className={`
                       w-full flex items-start space-x-3 px-3 py-3 rounded-lg text-left transition-all duration-200 group
                       ${isActive 
-                        ? 'bg-blue-50 text-blue-700 shadow-sm' 
+                        ? 'bg-blue-50 text-primary shadow-sm' 
                         : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }
                     `}
                   >
                     <Icon className={`
                       h-5 w-5 mt-0.5 flex-shrink-0 transition-colors
-                      ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'}
+                      ${isActive ? 'text-primary' : 'text-gray-400 group-hover:text-gray-600'}
                     `} />
                     <div className="min-w-0">
                       <div className="font-medium text-sm">{item.label}</div>
@@ -113,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
             <div className="p-4 border-b border-gray-100">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-blue-600" />
+                  <User className="h-4 w-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">

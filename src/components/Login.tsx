@@ -125,7 +125,7 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto h-16 w-16 bg-primary rounded-full flex items-center justify-center mb-4">
             <Scale className="h-8 w-8 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Legal Guide</h2>
@@ -137,15 +137,15 @@ const Login: React.FC = () => {
         </div>
 
         {/* Form */}
-        <div className="bg-white py-8 px-6 shadow-lg rounded-lg">
+        <div className="bg-surface py-8 px-6 shadow-lg rounded-lg">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <h3 className="text-xl font-semibold text-gray-900 text-center">{getTitle()}</h3>
 
             {/* Demo Mode Notice */}
             {isDemoMode && (
               <div className="p-3 rounded-md flex items-start space-x-2 bg-blue-50 border border-blue-200">
-                <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-blue-800">
+                <Info className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-primary-dark">
                   <p className="font-medium mb-1">Demo Mode</p>
                   <p>You can sign in with any email and password to test the app. For production use, please set up Supabase credentials.</p>
                 </div>
@@ -160,9 +160,9 @@ const Login: React.FC = () => {
                   : 'bg-green-50 border border-green-200'
               }`}>
                 {message.type === 'error' ? (
-                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <AlertCircle className="h-4 w-4 text-error" />
                 ) : (
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-success" />
                 )}
                 <span className={`text-sm ${
                   message.type === 'error' ? 'text-red-800' : 'text-green-800'
@@ -189,7 +189,7 @@ const Login: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary"
                   placeholder="Enter your email"
                 />
               </div>
@@ -213,7 +213,7 @@ const Login: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary"
                     placeholder="Enter your password"
                   />
                   <button
@@ -249,7 +249,7 @@ const Login: React.FC = () => {
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary"
                     placeholder="Confirm your password"
                   />
                   <button
@@ -271,7 +271,7 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {getButtonText()}
             </button>
@@ -284,7 +284,7 @@ const Login: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setAuthMode('reset')}
-                      className="text-sm text-blue-600 hover:text-blue-500 block mx-auto"
+                      className="text-sm text-primary hover:text-primary-dark block mx-auto"
                     >
                       Forgot your password?
                     </button>
@@ -304,7 +304,7 @@ const Login: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setAuthMode('signup')}
-                      className="text-blue-600 hover:text-blue-500 font-medium"
+                      className="text-primary hover:text-primary-dark font-medium"
                     >
                       Sign up
                     </button>
@@ -318,7 +318,7 @@ const Login: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setAuthMode('signin')}
-                    className="text-blue-600 hover:text-blue-500 font-medium"
+                    className="text-primary hover:text-primary-dark font-medium"
                   >
                     Sign in
                   </button>
@@ -331,7 +331,7 @@ const Login: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setAuthMode('signin')}
-                    className="text-blue-600 hover:text-blue-500 font-medium"
+                    className="text-primary hover:text-primary-dark font-medium"
                   >
                     Sign in
                   </button>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Bookmark, BookmarkCheck, Zap, Brain } from 'lucide-react';
+import { Send, Bot, User, Bookmark, BookmarkCheck, Zap, Brain, Mic } from 'lucide-react';
 import { useBookmarks } from '../contexts/BookmarkContext';
 import { aiService, AIResponse } from '../services/aiService';
 
@@ -25,6 +25,7 @@ const ChatInterface: React.FC = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { bookmarks, addBookmark, removeBookmark } = useBookmarks();
 
@@ -60,7 +61,7 @@ const ChatInterface: React.FC = () => {
       return {
         id: Date.now().toString(),
         type: 'bot',
-        content: `I apologize, but I'm experiencing technical difficulties. Please try rephrasing your question about "${userMessage}" or consult with a qualified legal professional for immediate assistance.`,
+        content: `I apologize, but I'm experiencing technical difficulties. Please try rephrasing your question about "${userMessage}" or consult with a qualified legal professional for immediate assistance.`, 
         timestamp: new Date(),
         legalReference: 'System Error - Fallback Response',
         confidence: 0.1,
@@ -131,13 +132,18 @@ const ChatInterface: React.FC = () => {
     }
   };
 
+  const handleVoiceInput = () => {
+    // Implement voice recognition logic here
+    setIsRecording(!isRecording);
+  };
+
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-surface">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="bg-surface border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Bot className="h-8 w-8 text-blue-600" />
+            <Bot className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Legal Q&A Assistant</h1>
               <p className="text-sm text-gray-600">Ask any legal question and get instant guidance</p>
@@ -152,8 +158,8 @@ const ChatInterface: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Zap className="h-4 w-4 text-blue-600" />
-                  <span className="text-xs text-blue-600 font-medium">Smart Rules</span>
+                  <Zap className="h-4 w-4 text-primary" />
+                  <span className="text-xs text-primary font-medium">Smart Rules</span>
                 </>
               )}
             </div>
@@ -175,7 +181,7 @@ const ChatInterface: React.FC = () => {
               {/* Avatar */}
               <div className={`flex-shrink-0 ${message.type === 'user' ? 'ml-3' : 'mr-3'}`}>
                 {message.type === 'user' ? (
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                     <User className="h-5 w-5 text-white" />
                   </div>
                 ) : (
@@ -188,9 +194,9 @@ const ChatInterface: React.FC = () => {
               {/* Message Content */}
               <div className={`flex-1 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
                 <div
-                  className={`inline-block px-4 py-3 rounded-2xl max-w-full ${
+                  className={`inline-block px-4 py-3 rounded-2xl max-w-full ${ 
                     message.type === 'user'
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-primary text-white'
                       : 'bg-gray-100 text-gray-900'
                   }`}
                 >
@@ -213,7 +219,7 @@ const ChatInterface: React.FC = () => {
                             )}
                             {message.confidence !== undefined && (
                               <div className="flex items-center space-x-1">
-                                <div className={`w-2 h-2 rounded-full ${
+                                <div className={`w-2 h-2 rounded-full ${ 
                                   message.confidence > 0.7 ? 'bg-green-500' :
                                   message.confidence > 0.4 ? 'bg-yellow-500' : 'bg-red-500'
                                 }`}></div>
@@ -236,9 +242,9 @@ const ChatInterface: React.FC = () => {
                     </span>
                     <button
                       onClick={() => toggleBookmark(message)}
-                      className={`p-1 rounded transition-colors ${
+                      className={`p-1 rounded transition-colors ${ 
                         isBookmarked(message.id)
-                          ? 'text-amber-600 hover:text-amber-700'
+                          ? 'text-secondary hover:text-secondary-dark'
                           : 'text-gray-400 hover:text-gray-600'
                       }`}
                       title={isBookmarked(message.id) ? 'Remove bookmark' : 'Bookmark this response'}
@@ -283,7 +289,7 @@ const ChatInterface: React.FC = () => {
           <div className="mb-4">
             <p className="text-sm text-gray-600 mb-2">Try asking about:</p>
             <div className="flex flex-wrap gap-2">
-              {[
+              {[ 
                 'What is bail?',
                 'Explain IPC 302',
                 'How to file an FIR?',
@@ -294,7 +300,7 @@ const ChatInterface: React.FC = () => {
                 <button
                   key={example}
                   onClick={() => setInputMessage(example)}
-                  className="px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors"
+                  className="px-3 py-1 text-xs bg-blue-50 text-primary rounded-full hover:bg-blue-100 transition-colors"
                 >
                   {example}
                 </button>
@@ -310,7 +316,7 @@ const ChatInterface: React.FC = () => {
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask any legal question... (e.g., 'What is bail?', 'Explain IPC 302', 'What is an FIR?')"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               rows={1}
               style={{ minHeight: '48px', maxHeight: '120px' }}
             />
@@ -318,10 +324,18 @@ const ChatInterface: React.FC = () => {
           <button
             onClick={handleSendMessage}
             disabled={!inputMessage.trim()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
           >
             <Send className="h-4 w-4" />
             <span>Send</span>
+          </button>
+          <button
+            onClick={handleVoiceInput}
+            className={`px-4 py-3 rounded-lg transition-colors flex items-center justify-center ${ 
+              isRecording ? 'bg-red-500 text-white' : 'bg-secondary text-white'
+            }`}
+          >
+            <Mic className="h-5 w-5" />
           </button>
         </div>
 

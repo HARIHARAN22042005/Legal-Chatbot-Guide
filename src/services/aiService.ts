@@ -173,7 +173,8 @@ Always emphasize that this is general legal information and specific legal advic
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.openaiApiKey}`,
+        'Authorization': 
+`Bearer ${this.openaiApiKey}`,
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
@@ -187,7 +188,9 @@ Always emphasize that this is general legal information and specific legal advic
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(
+`OpenAI API error: ${response.status}`
+      );
     }
 
     const data = await response.json();
@@ -214,7 +217,11 @@ Always emphasize that this is general legal information and specific legal advic
         keywords: ['fir', 'first information report', 'police', 'complaint', 'cognizable']
       },
       'ipc 302': {
-        content: 'IPC Section 302 - Punishment for Murder:\n\n• **Definition**: Causing death with intention to cause death or knowledge that act is likely to cause death\n• **Punishment**: Death penalty OR life imprisonment + fine\n• **Elements**: \n  - Intention to cause death\n  - Knowledge that act is likely to cause death\n  - Act causes death\n• **Distinction**: Different from culpable homicide (IPC 304)\n• **Exceptions**: Self-defense, sudden provocation (may reduce to culpable homicide)\n\n**Note**: Death penalty is awarded only in "rarest of rare" cases.',
+        content: `IPC Section 302 - Punishment for Murder:\n\n• **Definition**: Causing death with intention to cause death or knowledge that act is likely to cause death\n• **Punishment**: Death penalty OR life imprisonment + fine\n• **Elements**: 
+  - Intention to cause death
+  - Knowledge that act is likely to cause death
+  - Act causes death
+• **Distinction**: Different from culpable homicide (IPC 304)\n• **Exceptions**: Self-defense, sudden provocation (may reduce to culpable homicide)\n\n**Note**: Death penalty is awarded only in "rarest of rare" cases.`, 
         reference: 'Indian Penal Code, 1860 - Section 302',
         keywords: ['murder', '302', 'death', 'intention', 'homicide']
       },

@@ -18,13 +18,14 @@ import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import { BookmarkProvider } from './contexts/BookmarkContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+
 export type ActiveView = 'dashboard' | 'chat' | 'voice-interface' | 'knowledge-base' | 'case-tracker' | 'legal-news' | 'legal-calculator' | 'dictionary' | 'pdf-reader' | 'case-summarizer' | 'act-search' | 'bookmarks' | 'form-helper' | 'precedent-finder' | 'user-profile';
 
 // Loading component
 const LoadingSpinner = () => (
-  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div className="min-h-screen bg-background flex items-center justify-center">
     <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
       <p className="text-gray-600">Loading...</p>
     </div>
   </div>
@@ -74,7 +75,7 @@ const AppContent = () => {
 
   return (
     <BookmarkProvider>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen bg-background flex">
         <Sidebar
           activeView={activeView}
           setActiveView={setActiveView}
@@ -83,7 +84,7 @@ const AppContent = () => {
         />
 
         <div className="flex-1 flex flex-col lg:ml-64">
-          <header className="bg-white shadow-sm border-b border-gray-200 lg:hidden">
+          <header className="bg-surface shadow-sm border-b border-gray-200 lg:hidden">
             <div className="flex items-center justify-between p-4">
               <h1 className="text-xl font-bold text-gray-900">Legal Guide</h1>
               <button
@@ -97,7 +98,7 @@ const AppContent = () => {
             </div>
           </header>
 
-          <main className="flex-1 overflow-hidden">
+          <main className="flex-1 overflow-y-auto">
             {renderActiveView()}
           </main>
         </div>

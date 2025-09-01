@@ -24,7 +24,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       title: 'Ask Legal Question',
       description: 'Get instant answers to your legal queries',
       icon: MessageSquare,
-      color: 'bg-blue-500',
+      color: 'bg-primary',
       action: () => onNavigate('chat')
     },
     {
@@ -32,7 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       title: 'Voice Assistant',
       description: 'Speak your legal questions naturally',
       icon: Mic,
-      color: 'bg-purple-500',
+      color: 'bg-secondary',
       action: () => onNavigate('voice-interface')
     },
     {
@@ -91,7 +91,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       value: '127',
       change: '+12%',
       icon: MessageSquare,
-      color: 'text-blue-600'
+      color: 'text-primary'
     },
     {
       title: 'Documents Analyzed',
@@ -123,7 +123,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       title: 'Asked about bail procedures',
       time: '2 hours ago',
       icon: MessageSquare,
-      color: 'text-blue-600'
+      color: 'text-primary'
     },
     {
       id: '2',
@@ -168,7 +168,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div key={index} className="bg-surface p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center">
                 <div className={`p-2 rounded-lg bg-gray-50 ${stat.color}`}>
                   <Icon className="h-6 w-6" />
@@ -200,14 +200,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 <button
                   key={action.id}
                   onClick={action.action}
-                  className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-left group"
+                  className="bg-surface p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-left group"
                 >
                   <div className="flex items-start space-x-4">
                     <div className={`p-3 rounded-lg ${action.color} text-white group-hover:scale-110 transition-transform`}>
                       <Icon className="h-6 w-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary transition-colors">
                         {action.title}
                       </h3>
                       <p className="text-sm text-gray-600 mt-1">
@@ -224,7 +224,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         {/* Recent Activity */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h2>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-surface rounded-lg shadow-sm border border-gray-200">
             <div className="p-6">
               <div className="space-y-4">
                 {recentActivity.map((activity) => {
@@ -249,7 +249,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
               </div>
             </div>
             <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              <button className="text-sm text-primary hover:text-primary-dark font-medium">
                 View all activity
               </button>
             </div>
@@ -258,10 +258,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           {/* Quick Tips */}
           <div className="mt-6 bg-blue-50 rounded-lg p-6 border border-blue-200">
             <div className="flex items-start space-x-3">
-              <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-primary mt-0.5" />
               <div>
-                <h3 className="text-sm font-semibold text-blue-900 mb-2">Quick Tip</h3>
-                <p className="text-sm text-blue-800">
+                <h3 className="text-sm font-semibold text-primary-dark mb-2">Quick Tip</h3>
+                <p className="text-sm text-primary-dark">
                   Use the Voice Assistant for hands-free legal queries. Just click the microphone 
                   and speak your question naturally.
                 </p>
@@ -275,7 +275,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       <div className="mt-12">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Featured Tools</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
+          <div className="bg-gradient-to-br from-primary to-primary-dark p-6 rounded-lg text-white">
             <MessageSquare className="h-8 w-8 mb-4" />
             <h3 className="text-lg font-semibold mb-2">AI-Powered Chat</h3>
             <p className="text-blue-100 text-sm mb-4">
@@ -283,7 +283,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             </p>
             <button
               onClick={() => onNavigate('chat')}
-              className="bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+              className="bg-surface text-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
             >
               Start Chatting
             </button>
@@ -297,13 +297,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             </p>
             <button
               onClick={() => onNavigate('knowledge-base')}
-              className="bg-white text-green-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors"
+              className="bg-surface text-green-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors"
             >
               Explore Laws
             </button>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
+          <div className="bg-gradient-to-br from-secondary to-secondary-dark p-6 rounded-lg text-white">
             <Mic className="h-8 w-8 mb-4" />
             <h3 className="text-lg font-semibold mb-2">Voice Assistant</h3>
             <p className="text-purple-100 text-sm mb-4">
@@ -311,7 +311,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             </p>
             <button
               onClick={() => onNavigate('voice-interface')}
-              className="bg-white text-purple-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-50 transition-colors"
+              className="bg-surface text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-50 transition-colors"
             >
               Try Voice
             </button>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Calendar, Shield, Settings, Activity, BarChart3, FileText, MessageSquare, Bookmark, Clock, Award, Bell, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Calendar, Shield, Settings, Activity, BarChart3, FileText, MessageSquare, Bookmark, Clock, Award, Bell, Lock, Eye, EyeOff, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useBookmarks } from '../contexts/BookmarkContext';
 
+// Enhanced interfaces for better type safety and clarity
 interface UserStats {
   questionsAsked: number;
   documentsAnalyzed: number;
@@ -20,11 +21,15 @@ interface UserPreferences {
   timezone: string;
 }
 
+// Main UserProfile component
 const UserProfile: React.FC = () => {
   const { user, signOut } = useAuth();
   const { bookmarks } = useBookmarks();
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'settings' | 'security'>('overview');
   const [showRawData, setShowRawData] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+
+  // Mock data for user statistics and preferences
   const [userStats, setUserStats] = useState<UserStats>({
     questionsAsked: 127,
     documentsAnalyzed: 23,
@@ -33,6 +38,7 @@ const UserProfile: React.FC = () => {
     totalSessions: 45,
     lastActive: new Date()
   });
+
   const [preferences, setPreferences] = useState<UserPreferences>({
     emailNotifications: true,
     pushNotifications: false,
@@ -66,198 +72,165 @@ const UserProfile: React.FC = () => {
   ];
 
   const handleSignOut = async () => {
-    if (window.confirm('Are you sure you want to sign out?')) {
-      await signOut();
-    }
+    await signOut();
+    setShowSignOutModal(false);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-background min-h-screen">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <User className="h-10 w-10 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">
-                  {user.email?.split('@')[0] || 'User'}
-                </h1>
-                <p className="text-blue-100 text-lg">{user.email}</p>
-                <p className="text-blue-200 text-sm">
-                  Member since {formatDate(user.created_at)}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={handleSignOut}
-              className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
+      <Header user={user} onSignOut={() => setShowSignOutModal(true)} formatDate={formatDate} />
 
-        {/* Tab Navigation */}
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6">
-            {tabs.map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-      </div>
+      {/* Tab Navigation */}
+      <TabNavigation tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Tab Content */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        {activeTab === 'overview' && (
-          <OverviewTab user={user} userStats={userStats} formatDate={formatDate} />
-        )}
-        {activeTab === 'activity' && (
-          <ActivityTab userStats={userStats} bookmarks={bookmarks} />
-        )}
-        {activeTab === 'settings' && (
-          <SettingsTab preferences={preferences} setPreferences={setPreferences} />
-        )}
-        {activeTab === 'security' && (
-          <SecurityTab user={user} formatDate={formatDate} showRawData={showRawData} setShowRawData={setShowRawData} />
-        )}
-      </div>
+      <main className="mt-6">
+        <div className="bg-surface rounded-xl shadow-md border border-gray-200">
+          {activeTab === 'overview' && <OverviewTab user={user} userStats={userStats} formatDate={formatDate} />}
+          {activeTab === 'activity' && <ActivityTab userStats={userStats} bookmarks={bookmarks} />}
+          {activeTab === 'settings' && <SettingsTab preferences={preferences} setPreferences={setPreferences} />}
+          {activeTab === 'security' && <SecurityTab user={user} formatDate={formatDate} showRawData={showRawData} setShowRawData={setShowRawData} />}
+        </div>
+      </main>
+
+      {/* Sign Out Modal */}
+      {showSignOutModal && (
+        <SignOutModal onConfirm={handleSignOut} onCancel={() => setShowSignOutModal(false)} />
+      )}
     </div>
   );
 };
+
+// Header Component
+const Header: React.FC<{ user: any; onSignOut: () => void; formatDate: (date: string) => string }> = ({ user, onSignOut, formatDate }) => (
+  <header className="bg-surface rounded-xl shadow-md border border-gray-200 overflow-hidden mb-6">
+    <div className="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center ring-4 ring-gray-600">
+            <User className="h-10 w-10 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">
+              {user.email?.split('@')[0] || 'User'}
+            </h1>
+            <p className="text-gray-300 text-lg">{user.email}</p>
+            <p className="text-gray-400 text-sm mt-1">
+              Member since {formatDate(user.created_at)}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={onSignOut}
+          className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+        >
+          <LogOut className="h-5 w-5" />
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+);
+
+// Tab Navigation Component
+const TabNavigation: React.FC<{ tabs: any[]; activeTab: string; setActiveTab: (tab: any) => void }> = ({ tabs, activeTab, setActiveTab }) => (
+  <div className="bg-surface rounded-xl shadow-md border border-gray-200">
+    <nav className="flex space-x-1 sm:space-x-4 px-4">
+      {tabs.map(tab => {
+        const Icon = tab.icon;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center space-x-2 py-4 px-2 sm:px-4 border-b-4 font-semibold text-sm sm:text-base transition-all duration-300 ${
+              activeTab === tab.id
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
+            }`}
+          >
+            <Icon className="h-5 w-5" />
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  </div>
+);
 
 // Overview Tab Component
 const OverviewTab: React.FC<{ user: any; userStats: UserStats; formatDate: (date: string) => string }> = ({ user, userStats, formatDate }) => (
   <div className="p-6">
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Stats Cards */}
       <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <div className="flex items-center">
-            <MessageSquare className="h-8 w-8 text-blue-600" />
-            <div className="ml-3">
-              <p className="text-2xl font-bold text-blue-900">{userStats.questionsAsked}</p>
-              <p className="text-sm text-blue-700">Questions Asked</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-          <div className="flex items-center">
-            <FileText className="h-8 w-8 text-green-600" />
-            <div className="ml-3">
-              <p className="text-2xl font-bold text-green-900">{userStats.documentsAnalyzed}</p>
-              <p className="text-sm text-green-700">Documents</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-          <div className="flex items-center">
-            <BarChart3 className="h-8 w-8 text-orange-600" />
-            <div className="ml-3">
-              <p className="text-2xl font-bold text-orange-900">{userStats.casesTracked}</p>
-              <p className="text-sm text-orange-700">Cases Tracked</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-          <div className="flex items-center">
-            <Bookmark className="h-8 w-8 text-purple-600" />
-            <div className="ml-3">
-              <p className="text-2xl font-bold text-purple-900">{userStats.bookmarksSaved}</p>
-              <p className="text-sm text-purple-700">Bookmarks</p>
-            </div>
-          </div>
-        </div>
+        <StatCard icon={MessageSquare} value={userStats.questionsAsked} label="Questions Asked" color="primary" />
+        <StatCard icon={FileText} value={userStats.documentsAnalyzed} label="Documents" color="green" />
+        <StatCard icon={BarChart3} value={userStats.casesTracked} label="Cases Tracked" color="orange" />
+        <StatCard icon={Bookmark} value={userStats.bookmarksSaved} label="Bookmarks" color="purple" />
       </div>
+      <AccountInfo user={user} userStats={userStats} formatDate={formatDate} />
+    </div>
+    <AchievementsSection />
+  </div>
+);
 
-      {/* Account Info */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Account Information</h3>
-
-        <div className="space-y-3">
-          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-            <Mail className="h-5 w-5 text-gray-400" />
-            <div>
-              <p className="text-sm font-medium text-gray-900">Email</p>
-              <p className="text-sm text-gray-600">{user.email}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-            <Calendar className="h-5 w-5 text-gray-400" />
-            <div>
-              <p className="text-sm font-medium text-gray-900">Member Since</p>
-              <p className="text-sm text-gray-600">{formatDate(user.created_at)}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-            <Clock className="h-5 w-5 text-gray-400" />
-            <div>
-              <p className="text-sm font-medium text-gray-900">Last Active</p>
-              <p className="text-sm text-gray-600">{userStats.lastActive.toLocaleDateString()}</p>
-            </div>
-          </div>
-        </div>
+// Stat Card Component
+const StatCard: React.FC<{ icon: React.ElementType; value: number; label: string; color: string }> = ({ icon: Icon, value, label, color }) => (
+  <div className={`bg-${color}-50 p-4 rounded-xl border border-${color}-200 shadow-sm hover:shadow-md transition-shadow`}>
+    <div className="flex items-center">
+      <Icon className={`h-8 w-8 text-${color}-600`} />
+      <div className="ml-3">
+        <p className={`text-2xl font-bold text-${color}-900`}>{value}</p>
+        <p className={`text-sm text-${color}-700`}>{label}</p>
       </div>
     </div>
+  </div>
+);
 
-    {/* Achievement Section */}
-    <div className="mt-8 pt-6 border-t border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <Award className="h-5 w-5 text-yellow-600 mr-2" />
-        Achievements
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <div className="flex items-center">
-            <Award className="h-6 w-6 text-yellow-600" />
-            <div className="ml-3">
-              <p className="font-medium text-yellow-900">Legal Explorer</p>
-              <p className="text-sm text-yellow-700">Asked 100+ questions</p>
-            </div>
-          </div>
-        </div>
+// Account Info Component
+const AccountInfo: React.FC<{ user: any; userStats: UserStats; formatDate: (date: string) => string }> = ({ user, userStats, formatDate }) => (
+  <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+    <h3 className="text-lg font-semibold text-gray-900">Account Information</h3>
+    <InfoItem icon={Mail} label="Email" value={user.email} />
+    <InfoItem icon={Calendar} label="Member Since" value={formatDate(user.created_at)} />
+    <InfoItem icon={Clock} label="Last Active" value={userStats.lastActive.toLocaleDateString()} />
+  </div>
+);
 
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center">
-            <FileText className="h-6 w-6 text-blue-600" />
-            <div className="ml-3">
-              <p className="font-medium text-blue-900">Document Analyst</p>
-              <p className="text-sm text-blue-700">Analyzed 20+ documents</p>
-            </div>
-          </div>
-        </div>
+// Info Item Component
+const InfoItem: React.FC<{ icon: React.ElementType; label: string; value: string }> = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-200">
+    <Icon className="h-5 w-5 text-gray-500 mt-1" />
+    <div>
+      <p className="text-sm font-medium text-gray-900">{label}</p>
+      <p className="text-sm text-gray-600 break-all">{value}</p>
+    </div>
+  </div>
+);
 
-        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center">
-            <Bookmark className="h-6 w-6 text-green-600" />
-            <div className="ml-3">
-              <p className="font-medium text-green-900">Knowledge Collector</p>
-              <p className="text-sm text-green-700">Saved 40+ bookmarks</p>
-            </div>
-          </div>
-        </div>
+// Achievements Section Component
+const AchievementsSection: React.FC = () => (
+  <div className="mt-8 pt-6 border-t border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+      <Award className="h-6 w-6 text-yellow-600 mr-2" />
+      Achievements
+    </h3>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <AchievementCard icon={Award} title="Legal Explorer" description="Asked 100+ questions" color="yellow" />
+      <AchievementCard icon={FileText} title="Document Analyst" description="Analyzed 20+ documents" color="blue" />
+      <AchievementCard icon={Bookmark} title="Knowledge Collector" description="Saved 40+ bookmarks" color="green" />
+    </div>
+  </div>
+);
+
+// Achievement Card Component
+const AchievementCard: React.FC<{ icon: React.ElementType; title: string; description: string; color: string }> = ({ icon: Icon, title, description, color }) => (
+  <div className={`p-4 bg-${color}-50 border border-${color}-200 rounded-xl shadow-sm`}>
+    <div className="flex items-center">
+      <Icon className={`h-6 w-6 text-${color}-600`} />
+      <div className="ml-3">
+        <p className={`font-semibold text-${color}-900`}>{title}</p>
+        <p className={`text-sm text-${color}-700`}>{description}</p>
       </div>
     </div>
   </div>
@@ -266,76 +239,64 @@ const OverviewTab: React.FC<{ user: any; userStats: UserStats; formatDate: (date
 // Activity Tab Component
 const ActivityTab: React.FC<{ userStats: UserStats; bookmarks: any[] }> = ({ userStats, bookmarks }) => (
   <div className="p-6">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Usage Statistics */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Usage Statistics</h3>
-        <div className="space-y-4">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <MessageSquare className="h-5 w-5 text-blue-600 mr-3" />
-                <span className="font-medium">Questions Asked</span>
-              </div>
-              <span className="text-2xl font-bold text-blue-600">{userStats.questionsAsked}</span>
-            </div>
-            <div className="mt-2 bg-blue-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: '85%' }}></div>
-            </div>
-          </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <UsageStatistics userStats={userStats} />
+      <RecentBookmarks bookmarks={bookmarks} />
+    </div>
+  </div>
+);
 
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <FileText className="h-5 w-5 text-green-600 mr-3" />
-                <span className="font-medium">Documents Analyzed</span>
-              </div>
-              <span className="text-2xl font-bold text-green-600">{userStats.documentsAnalyzed}</span>
-            </div>
-            <div className="mt-2 bg-green-200 rounded-full h-2">
-              <div className="bg-green-600 h-2 rounded-full" style={{ width: '60%' }}></div>
-            </div>
-          </div>
+// Usage Statistics Component
+const UsageStatistics: React.FC<{ userStats: UserStats }> = ({ userStats }) => (
+  <div>
+    <h3 className="text-xl font-semibold text-gray-900 mb-4">Usage Statistics</h3>
+    <div className="space-y-4">
+      <UsageBar icon={MessageSquare} label="Questions Asked" value={userStats.questionsAsked} maxValue={150} color="primary" />
+      <UsageBar icon={FileText} label="Documents Analyzed" value={userStats.documentsAnalyzed} maxValue={50} color="green" />
+      <UsageBar icon={BarChart3} label="Total Sessions" value={userStats.totalSessions} maxValue={60} color="orange" />
+    </div>
+  </div>
+);
 
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <BarChart3 className="h-5 w-5 text-orange-600 mr-3" />
-                <span className="font-medium">Total Sessions</span>
-              </div>
-              <span className="text-2xl font-bold text-orange-600">{userStats.totalSessions}</span>
-            </div>
-            <div className="mt-2 bg-orange-200 rounded-full h-2">
-              <div className="bg-orange-600 h-2 rounded-full" style={{ width: '70%' }}></div>
-            </div>
-          </div>
-        </div>
+// Usage Bar Component
+const UsageBar: React.FC<{ icon: React.ElementType; label: string; value: number; maxValue: number; color: string }> = ({ icon: Icon, label, value, maxValue, color }) => (
+  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+    <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center">
+        <Icon className={`h-5 w-5 text-${color}-600 mr-3`} />
+        <span className="font-medium">{label}</span>
       </div>
+      <span className={`text-2xl font-bold text-${color}-600`}>{value}</span>
+    </div>
+    <div className={`bg-${color}-200 rounded-full h-2.5`}>
+      <div className={`bg-${color}-600 h-2.5 rounded-full`} style={{ width: `${(value / maxValue) * 100}%` }}></div>
+    </div>
+  </div>
+);
 
-      {/* Recent Bookmarks */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Bookmarks</h3>
-        <div className="space-y-3 max-h-96 overflow-y-auto">
-          {bookmarks.slice(0, 10).map((bookmark, index) => (
-            <div key={bookmark.id || index} className="p-3 bg-gray-50 rounded-lg">
-              <h4 className="font-medium text-gray-900 text-sm">{bookmark.title}</h4>
-              <p className="text-xs text-gray-600 mt-1 line-clamp-2">{bookmark.content}</p>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-xs text-blue-600">{bookmark.source}</span>
-                <span className="text-xs text-gray-500">
-                  {new Date(bookmark.timestamp).toLocaleDateString()}
-                </span>
-              </div>
+// Recent Bookmarks Component
+const RecentBookmarks: React.FC<{ bookmarks: any[] }> = ({ bookmarks }) => (
+  <div>
+    <h3 className="text-xl font-semibold text-gray-900 mb-4">Recent Bookmarks</h3>
+    <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+      {bookmarks.length > 0 ? (
+        bookmarks.slice(0, 10).map((bookmark, index) => (
+          <div key={bookmark.id || index} className="p-4 bg-gray-50 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
+            <h4 className="font-semibold text-gray-900 text-md">{bookmark.title}</h4>
+            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{bookmark.content}</p>
+            <div className="flex items-center justify-between mt-3">
+              <span className="text-xs font-medium text-primary bg-blue-100 px-2 py-1 rounded-full">{bookmark.source}</span>
+              <span className="text-xs text-gray-500">{new Date(bookmark.timestamp).toLocaleDateString()}</span>
             </div>
-          ))}
-          {bookmarks.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              <Bookmark className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-              <p>No bookmarks saved yet</p>
-            </div>
-          )}
+          </div>
+        ))
+      ) : (
+        <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-xl">
+          <Bookmark className="h-10 w-10 mx-auto mb-3 text-gray-400" />
+          <p className="font-medium">No bookmarks saved yet</p>
+          <p className="text-sm">Start bookmarking important information.</p>
         </div>
-      </div>
+      )}
     </div>
   </div>
 );
@@ -343,233 +304,245 @@ const ActivityTab: React.FC<{ userStats: UserStats; bookmarks: any[] }> = ({ use
 // Settings Tab Component
 const SettingsTab: React.FC<{ preferences: UserPreferences; setPreferences: (prefs: UserPreferences) => void }> = ({ preferences, setPreferences }) => {
   const handlePreferenceChange = (key: keyof UserPreferences, value: any) => {
-    setPreferences({ ...preferences, [key]: value });
-    // In a real app, you'd save this to the backend
-    localStorage.setItem('userPreferences', JSON.stringify({ ...preferences, [key]: value }));
+    const newPreferences = { ...preferences, [key]: value };
+    setPreferences(newPreferences);
+    localStorage.setItem('userPreferences', JSON.stringify(newPreferences));
   };
 
   return (
     <div className="p-6">
-      <div className="max-w-2xl">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Preferences</h3>
+      <div className="max-w-3xl mx-auto">
+        <h3 className="text-2xl font-bold text-gray-900 mb-8">Preferences</h3>
+        <div className="space-y-8">
+          <SettingsSection icon={Bell} title="Notifications">
+            <ToggleSetting
+              label="Email Notifications"
+              description="Receive updates about legal news and case reminders"
+              enabled={preferences.emailNotifications}
+              onChange={() => handlePreferenceChange('emailNotifications', !preferences.emailNotifications)}
+            />
+            <ToggleSetting
+              label="Push Notifications"
+              description="Get instant alerts for important updates"
+              enabled={preferences.pushNotifications}
+              onChange={() => handlePreferenceChange('pushNotifications', !preferences.pushNotifications)}
+            />
+          </SettingsSection>
 
-        <div className="space-y-6">
-          {/* Notifications */}
-          <div>
-            <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center">
-              <Bell className="h-5 w-5 text-gray-600 mr-2" />
-              Notifications
-            </h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900">Email Notifications</p>
-                  <p className="text-sm text-gray-600">Receive updates about legal news and case reminders</p>
-                </div>
-                <button
-                  onClick={() => handlePreferenceChange('emailNotifications', !preferences.emailNotifications)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    preferences.emailNotifications ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      preferences.emailNotifications ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
+          <SettingsSection icon={Eye} title="Appearance">
+            <ToggleSetting
+              label="Dark Mode"
+              description="Switch to dark theme (coming soon)"
+              enabled={preferences.darkMode}
+              onChange={() => {}}
+              disabled
+            />
+          </SettingsSection>
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900">Push Notifications</p>
-                  <p className="text-sm text-gray-600">Get instant alerts for important updates</p>
-                </div>
-                <button
-                  onClick={() => handlePreferenceChange('pushNotifications', !preferences.pushNotifications)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    preferences.pushNotifications ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      preferences.pushNotifications ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Appearance */}
-          <div>
-            <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center">
-              <Eye className="h-5 w-5 text-gray-600 mr-2" />
-              Appearance
-            </h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900">Dark Mode</p>
-                  <p className="text-sm text-gray-600">Switch to dark theme (coming soon)</p>
-                </div>
-                <button
-                  onClick={() => handlePreferenceChange('darkMode', !preferences.darkMode)}
-                  disabled
-                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 opacity-50 cursor-not-allowed"
-                >
-                  <span className="inline-block h-4 w-4 transform rounded-full bg-white translate-x-1" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Language & Region */}
-          <div>
-            <h4 className="text-md font-medium text-gray-900 mb-4">Language & Region</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
-                <select
-                  value={preferences.language}
-                  onChange={(e) => handlePreferenceChange('language', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="English">English</option>
-                  <option value="Hindi">हिंदी (Hindi)</option>
-                  <option value="Tamil">தமிழ் (Tamil)</option>
-                  <option value="Telugu">తెలుగు (Telugu)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-                <select
-                  value={preferences.timezone}
-                  onChange={(e) => handlePreferenceChange('timezone', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
-                  <option value="Asia/Mumbai">Asia/Mumbai (IST)</option>
-                  <option value="UTC">UTC</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <SettingsSection icon={Globe} title="Language & Region">
+            <SelectSetting
+              label="Language"
+              value={preferences.language}
+              onChange={(e) => handlePreferenceChange('language', e.target.value)}
+              options={[
+                { value: 'English', label: 'English' },
+                { value: 'Hindi', label: 'हिंदी (Hindi)' },
+                { value: 'Tamil', label: 'தமிழ் (Tamil)' },
+                { value: 'Telugu', label: 'తెలుగు (Telugu)' },
+              ]}
+            />
+            <SelectSetting
+              label="Timezone"
+              value={preferences.timezone}
+              onChange={(e) => handlePreferenceChange('timezone', e.target.value)}
+              options={[
+                { value: 'Asia/Kolkata', label: 'Asia/Kolkata (IST)' },
+                { value: 'Asia/Mumbai', label: 'Asia/Mumbai (IST)' },
+                { value: 'UTC', label: 'UTC' },
+              ]}
+            />
+          </SettingsSection>
         </div>
       </div>
     </div>
   );
 };
 
+// Settings Section Component
+const SettingsSection: React.FC<{ icon: React.ElementType; title: string; children: React.ReactNode }> = ({ icon: Icon, title, children }) => (
+  <div>
+    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+      <Icon className="h-6 w-6 text-gray-600 mr-3" />
+      {title}
+    </h4>
+    <div className="space-y-4 pl-9">{children}</div>
+  </div>
+);
+
+// Toggle Setting Component
+const ToggleSetting: React.FC<{ label: string; description: string; enabled: boolean; onChange: () => void; disabled?: boolean }> = ({ label, description, enabled, onChange, disabled }) => (
+  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+    <div>
+      <p className="font-medium text-gray-900">{label}</p>
+      <p className="text-sm text-gray-600">{description}</p>
+    </div>
+    <button
+      onClick={onChange}
+      disabled={disabled}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+        enabled ? 'bg-primary' : 'bg-gray-300'
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+          enabled ? 'translate-x-6' : 'translate-x-1'
+        }`}
+      />
+    </button>
+  </div>
+);
+
+// Select Setting Component
+const SelectSetting: React.FC<{ label: string; value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void; options: { value: string; label: string }[] }> = ({ label, value, onChange, options }) => (
+  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+    <label className="block text-md font-medium text-gray-800 mb-2">{label}</label>
+    <select
+      value={value}
+      onChange={onChange}
+      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary transition-shadow"
+    >
+      {options.map(option => (
+        <option key={option.value} value={option.value}>{option.label}</option>
+      ))}
+    </select>
+  </div>
+);
+
 // Security Tab Component
-const SecurityTab: React.FC<{
-  user: any;
-  formatDate: (date: string) => string;
-  showRawData: boolean;
-  setShowRawData: (show: boolean) => void
-}> = ({ user, formatDate, showRawData, setShowRawData }) => (
+const SecurityTab: React.FC<{ user: any; formatDate: (date: string) => string; showRawData: boolean; setShowRawData: (show: boolean) => void }> = ({ user, formatDate, showRawData, setShowRawData }) => (
   <div className="p-6">
-    <div className="max-w-4xl">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">Security & Privacy</h3>
-
-      <div className="space-y-6">
-        {/* Account Security */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center">
-            <Shield className="h-6 w-6 text-green-600 mr-3" />
-            <div>
-              <h4 className="font-medium text-green-900">Account Secured</h4>
-              <p className="text-sm text-green-700">Your account is protected with email verification</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Account Details */}
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-4">Account Details</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Email Address</p>
-                  <p className="text-sm text-gray-600">{user.email}</p>
-                  <p className="text-xs text-green-600 mt-1">✓ Verified</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <User className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">User ID</p>
-                  <p className="text-sm text-gray-600 font-mono">{user.id}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <Calendar className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Account Created</p>
-                  <p className="text-sm text-gray-600">{formatDate(user.created_at)}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <Clock className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Last Updated</p>
-                  <p className="text-sm text-gray-600">{formatDate(user.updated_at || user.created_at)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Privacy Information */}
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-4">Privacy Information</h4>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h5 className="font-medium text-blue-900 mb-2">Data Protection</h5>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Your data is encrypted and stored securely</li>
-              <li>• We don't share your personal information with third parties</li>
-              <li>• You can request data deletion at any time</li>
-              <li>• All legal queries are processed confidentially</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Developer Information */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-md font-medium text-gray-900">Developer Information</h4>
-            <button
-              onClick={() => setShowRawData(!showRawData)}
-              className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"
-            >
-              {showRawData ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              <span>{showRawData ? 'Hide' : 'Show'} Raw Data</span>
-            </button>
-          </div>
-
-          {showRawData && (
-            <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-              <pre className="text-xs text-green-400 font-mono">
-                {JSON.stringify(user, null, 2)}
-              </pre>
-            </div>
-          )}
-        </div>
+    <div className="max-w-4xl mx-auto">
+      <h3 className="text-2xl font-bold text-gray-900 mb-8">Security & Privacy</h3>
+      <div className="space-y-8">
+        <SecurityStatus />
+        <AccountDetails user={user} formatDate={formatDate} />
+        <PrivacyInfo />
+        <DeveloperInfo user={user} showRawData={showRawData} setShowRawData={setShowRawData} />
       </div>
     </div>
   </div>
+);
+
+// Security Status Component
+const SecurityStatus: React.FC = () => (
+  <div className="bg-green-50 border-l-4 border-green-500 rounded-r-lg p-4 shadow-sm">
+    <div className="flex items-center">
+      <Shield className="h-7 w-7 text-green-600 mr-4" />
+      <div>
+        <h4 className="font-semibold text-green-900">Account Secured</h4>
+        <p className="text-sm text-green-800">Your account is protected with email-based authentication.</p>
+      </div>
+    </div>
+  </div>
+);
+
+// Account Details Component
+const AccountDetails: React.FC<{ user: any; formatDate: (date: string) => string }> = ({ user, formatDate }) => (
+  <div>
+    <h4 className="text-lg font-semibold text-gray-900 mb-4">Account Details</h4>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <DetailItem icon={Mail} label="Email Address" value={user.email} verified />
+      <DetailItem icon={User} label="User ID" value={user.id} mono />
+      <DetailItem icon={Calendar} label="Account Created" value={formatDate(user.created_at)} />
+      <DetailItem icon={Clock} label="Last Updated" value={formatDate(user.updated_at || user.created_at)} />
+    </div>
+  </div>
+);
+
+// Detail Item Component
+const DetailItem: React.FC<{ icon: React.ElementType; label: string; value: string; verified?: boolean; mono?: boolean }> = ({ icon: Icon, label, value, verified, mono }) => (
+  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+    <div className="flex items-start space-x-3">
+      <Icon className="h-5 w-5 text-gray-500 mt-1" />
+      <div>
+        <p className="text-sm font-medium text-gray-900">{label}</p>
+        <p className={`text-sm text-gray-600 ${mono ? 'font-mono' : ''}`}>{value}</p>
+        {verified && <p className="text-xs text-green-600 mt-1 font-semibold">✓ Verified</p>}
+      </div>
+    </div>
+  </div>
+);
+
+// Privacy Info Component
+const PrivacyInfo: React.FC = () => (
+  <div>
+    <h4 className="text-lg font-semibold text-gray-900 mb-4">Privacy Information</h4>
+    <div className="bg-blue-50 border-l-4 border-primary rounded-r-lg p-4 shadow-sm">
+      <h5 className="font-semibold text-primary-dark mb-2">Data Protection Commitment</h5>
+      <ul className="text-sm text-primary-dark space-y-2 list-disc list-inside">
+        <li>Your data is encrypted at rest and in transit.</li>
+        <li>We do not share your personal information with third parties without your consent.</li>
+        <li>You have the right to request data deletion at any time.</li>
+        <li>All legal queries are processed with strict confidentiality.</li>
+      </ul>
+    </div>
+  </div>
+);
+
+// Developer Info Component
+const DeveloperInfo: React.FC<{ user: any; showRawData: boolean; setShowRawData: (show: boolean) => void }> = ({ user, showRawData, setShowRawData }) => (
+  <div>
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-lg font-semibold text-gray-900">Developer Information</h4>
+      <button
+        onClick={() => setShowRawData(!showRawData)}
+        className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 font-medium"
+      >
+        {showRawData ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        <span>{showRawData ? 'Hide' : 'Show'} Raw User Data</span>
+      </button>
+    </div>
+    {showRawData && (
+      <div className="bg-gray-900 rounded-xl p-4 overflow-x-auto shadow-inner">
+        <pre className="text-xs text-green-400 font-mono">
+          {JSON.stringify(user, null, 2)}
+        </pre>
+      </div>
+    )}
+  </div>
+);
+
+// Sign Out Modal Component
+const SignOutModal: React.FC<{ onConfirm: () => void; onCancel: () => void }> = ({ onConfirm, onCancel }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-surface rounded-xl shadow-2xl p-8 max-w-sm w-full">
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">Confirm Sign Out</h2>
+      <p className="text-gray-600 mb-6">Are you sure you want to sign out of your account?</p>
+      <div className="flex justify-end space-x-4">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={onConfirm}
+          className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors shadow-lg"
+        >
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+// A placeholder for the Globe icon if not available in lucide-react
+const Globe: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
 );
 
 export default UserProfile;
