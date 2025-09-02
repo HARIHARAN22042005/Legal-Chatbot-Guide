@@ -9,6 +9,8 @@ export interface Bookmark {
   category?: string;
   tags?: string[];
   notes?: string;
+  act?: any;
+  section?: any;
 }
 
 interface BookmarkContextType {
