@@ -18,8 +18,9 @@ import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import { BookmarkProvider } from './contexts/BookmarkContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import KnowYourRights from './components/KnowYourRights';
 
-export type ActiveView = 'dashboard' | 'chat' | 'voice-interface' | 'knowledge-base' | 'case-tracker' | 'legal-news' | 'legal-calculator' | 'dictionary' | 'pdf-reader' | 'case-summarizer' | 'act-search' | 'bookmarks' | 'form-helper' | 'precedent-finder' | 'user-profile';
+export type ActiveView = 'dashboard' | 'chat' | 'voice-interface' | 'knowledge-base' | 'case-tracker' | 'legal-news' | 'legal-calculator' | 'dictionary' | 'pdf-reader' | 'case-summarizer' | 'act-search' | 'bookmarks' | 'form-helper' | 'precedent-finder' | 'user-profile' | 'know-your-rights';
 
 // Loading component
 const LoadingSpinner = () => (
@@ -68,6 +69,8 @@ const AppContent = () => {
         return <PrecedentFinder />;
       case 'user-profile':
         return <UserProfile />;
+      case 'know-your-rights':
+        return <KnowYourRights />;
       default:
         return <Dashboard onNavigate={(view) => setActiveView(view as ActiveView)} />;
     }

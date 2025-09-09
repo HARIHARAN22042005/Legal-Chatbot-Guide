@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Mic, Book, FolderOpen, Newspaper, Calculator, FileText, Scale, TrendingUp, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import { MessageSquare, Mic, Book, FolderOpen, Newspaper, Calculator, FileText, Scale, TrendingUp, Clock, AlertCircle, CheckCircle, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface QuickAction {
@@ -26,6 +26,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       icon: MessageSquare,
       color: 'bg-primary',
       action: () => onNavigate('chat')
+    },
+    {
+      id: 'know-your-rights',
+      title: 'Know Your Rights',
+      description: 'Explore your fundamental rights as an Indian citizen',
+      icon: Shield,
+      color: 'bg-teal-500',
+      action: () => onNavigate('know-your-rights')
     },
     {
       id: 'voice',
